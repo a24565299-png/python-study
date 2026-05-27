@@ -45,13 +45,26 @@
       ]
     },
     {
+      "cell_type": "markdown",
+      "source": [
+        "# Smart Finance Assistant\n",
+        "\n",
+        "Student Name: Junmo Kim  \n",
+        "Student ID: a24565299  \n",
+        "Unit: ISYS2001"
+      ],
+      "metadata": {
+        "id": "qdAg7-M1DYJL"
+      }
+    },
+    {
       "cell_type": "code",
       "metadata": {
         "id": "gHc2i7Cw6Wrx",
         "colab": {
           "base_uri": "https://localhost:8080/"
         },
-        "outputId": "927fac02-e5a0-45f1-f073-502ce89aec17"
+        "outputId": "ad1dc6c1-a388-4b7a-f8a5-df3e12cb88e1"
       },
       "source": [
         "# Install required packages in Google Colab\n",
@@ -67,7 +80,7 @@
         "print(\"📦 Core libraries loaded successfully!\")\n",
         "print(f\"Pandas version: {pd.__version__}\")\n"
       ],
-      "execution_count": 1,
+      "execution_count": 34,
       "outputs": [
         {
           "output_type": "stream",
@@ -75,8 +88,7 @@
           "text": [
             "Requirement already satisfied: gradio in /usr/local/lib/python3.12/dist-packages (5.50.0)\n",
             "Requirement already satisfied: pandas in /usr/local/lib/python3.12/dist-packages (2.2.2)\n",
-            "Collecting hands-on-ai\n",
-            "  Downloading hands_on_ai-0.2.1-py3-none-any.whl.metadata (9.2 kB)\n",
+            "Requirement already satisfied: hands-on-ai in /usr/local/lib/python3.12/dist-packages (0.2.1)\n",
             "Requirement already satisfied: aiofiles<25.0,>=22.0 in /usr/local/lib/python3.12/dist-packages (from gradio) (24.1.0)\n",
             "Requirement already satisfied: anyio<5.0,>=3.0 in /usr/local/lib/python3.12/dist-packages (from gradio) (4.13.0)\n",
             "Requirement already satisfied: brotli>=1.1.0 in /usr/local/lib/python3.12/dist-packages (from gradio) (1.2.0)\n",
@@ -111,13 +123,10 @@
             "Requirement already satisfied: tzdata>=2022.7 in /usr/local/lib/python3.12/dist-packages (from pandas) (2026.2)\n",
             "Requirement already satisfied: requests in /usr/local/lib/python3.12/dist-packages (from hands-on-ai) (2.32.4)\n",
             "Requirement already satisfied: python-fasthtml in /usr/local/lib/python3.12/dist-packages (from hands-on-ai) (0.12.50)\n",
-            "Collecting python-docx (from hands-on-ai)\n",
-            "  Downloading python_docx-1.2.0-py3-none-any.whl.metadata (2.0 kB)\n",
-            "Collecting pymupdf (from hands-on-ai)\n",
-            "  Downloading pymupdf-1.27.2.3-cp310-abi3-manylinux_2_28_x86_64.whl.metadata (24 kB)\n",
+            "Requirement already satisfied: python-docx in /usr/local/lib/python3.12/dist-packages (from hands-on-ai) (1.2.0)\n",
+            "Requirement already satisfied: pymupdf in /usr/local/lib/python3.12/dist-packages (from hands-on-ai) (1.27.2.3)\n",
             "Requirement already satisfied: scikit-learn in /usr/local/lib/python3.12/dist-packages (from hands-on-ai) (1.6.1)\n",
-            "Collecting instructor>=1.11.0 (from hands-on-ai)\n",
-            "  Downloading instructor-1.15.1-py3-none-any.whl.metadata (12 kB)\n",
+            "Requirement already satisfied: instructor>=1.11.0 in /usr/local/lib/python3.12/dist-packages (from hands-on-ai) (1.15.1)\n",
             "Requirement already satisfied: idna>=2.8 in /usr/local/lib/python3.12/dist-packages (from anyio<5.0,>=3.0->gradio) (3.15)\n",
             "Requirement already satisfied: typing-inspection>=0.4.2 in /usr/local/lib/python3.12/dist-packages (from fastapi<1.0,>=0.115.2->gradio) (0.4.2)\n",
             "Requirement already satisfied: annotated-doc>=0.0.2 in /usr/local/lib/python3.12/dist-packages (from fastapi<1.0,>=0.115.2->gradio) (0.0.4)\n",
@@ -129,8 +138,7 @@
             "Requirement already satisfied: tqdm>=4.42.1 in /usr/local/lib/python3.12/dist-packages (from huggingface-hub<2.0,>=0.33.5->gradio) (4.67.3)\n",
             "Requirement already satisfied: aiohttp<4.0.0,>=3.9.1 in /usr/local/lib/python3.12/dist-packages (from instructor>=1.11.0->hands-on-ai) (3.13.5)\n",
             "Requirement already satisfied: docstring-parser<1.0,>=0.16 in /usr/local/lib/python3.12/dist-packages (from instructor>=1.11.0->hands-on-ai) (0.18.0)\n",
-            "Collecting jiter<0.14,>=0.6.1 (from instructor>=1.11.0->hands-on-ai)\n",
-            "  Downloading jiter-0.13.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (5.2 kB)\n",
+            "Requirement already satisfied: jiter<0.14,>=0.6.1 in /usr/local/lib/python3.12/dist-packages (from instructor>=1.11.0->hands-on-ai) (0.13.0)\n",
             "Requirement already satisfied: openai<3.0.0,>=2.0.0 in /usr/local/lib/python3.12/dist-packages (from instructor>=1.11.0->hands-on-ai) (2.37.0)\n",
             "Requirement already satisfied: pydantic-core<3.0.0,>=2.18.0 in /usr/local/lib/python3.12/dist-packages (from instructor>=1.11.0->hands-on-ai) (2.41.4)\n",
             "Requirement already satisfied: rich<15.0.0,>=13.7.0 in /usr/local/lib/python3.12/dist-packages (from instructor>=1.11.0->hands-on-ai) (13.9.4)\n",
@@ -169,22 +177,6 @@
             "Requirement already satisfied: soupsieve>1.2 in /usr/local/lib/python3.12/dist-packages (from beautifulsoup4->python-fasthtml->hands-on-ai) (2.8.3)\n",
             "Requirement already satisfied: apsw in /usr/local/lib/python3.12/dist-packages (from apswutils>=0.1.2->fastlite>=0.1.1->python-fasthtml->hands-on-ai) (3.53.1.0)\n",
             "Requirement already satisfied: mdurl~=0.1 in /usr/local/lib/python3.12/dist-packages (from markdown-it-py>=2.2.0->rich<15.0.0,>=13.7.0->instructor>=1.11.0->hands-on-ai) (0.1.2)\n",
-            "Downloading hands_on_ai-0.2.1-py3-none-any.whl (143 kB)\n",
-            "\u001b[2K   \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m143.7/143.7 kB\u001b[0m \u001b[31m7.2 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
-            "\u001b[?25hDownloading instructor-1.15.1-py3-none-any.whl (178 kB)\n",
-            "\u001b[2K   \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m178.2/178.2 kB\u001b[0m \u001b[31m7.2 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
-            "\u001b[?25hDownloading pymupdf-1.27.2.3-cp310-abi3-manylinux_2_28_x86_64.whl (25.0 MB)\n",
-            "\u001b[2K   \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m25.0/25.0 MB\u001b[0m \u001b[31m17.5 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
-            "\u001b[?25hDownloading python_docx-1.2.0-py3-none-any.whl (252 kB)\n",
-            "\u001b[2K   \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m253.0/253.0 kB\u001b[0m \u001b[31m11.3 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
-            "\u001b[?25hDownloading jiter-0.13.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (360 kB)\n",
-            "\u001b[2K   \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m360.7/360.7 kB\u001b[0m \u001b[31m14.3 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
-            "\u001b[?25hInstalling collected packages: python-docx, pymupdf, jiter, instructor, hands-on-ai\n",
-            "  Attempting uninstall: jiter\n",
-            "    Found existing installation: jiter 0.15.0\n",
-            "    Uninstalling jiter-0.15.0:\n",
-            "      Successfully uninstalled jiter-0.15.0\n",
-            "Successfully installed hands-on-ai-0.2.1 instructor-1.15.1 jiter-0.13.0 pymupdf-1.27.2.3 python-docx-1.2.0\n",
             "📦 Core libraries loaded successfully!\n",
             "Pandas version: 2.2.2\n"
           ]
@@ -209,7 +201,7 @@
         "colab": {
           "base_uri": "https://localhost:8080/"
         },
-        "outputId": "13af2542-f870-4e55-a747-3ca55ff3c323"
+        "outputId": "e425f412-a2fc-4712-8446-a54a3c791268"
       },
       "source": [
         "import os\n",
@@ -224,7 +216,7 @@
         "\n",
         "print(\"🔑 Hands-on-AI configured successfully!\")\n"
       ],
-      "execution_count": 2,
+      "execution_count": 35,
       "outputs": [
         {
           "output_type": "stream",
@@ -262,7 +254,7 @@
         "colab": {
           "base_uri": "https://localhost:8080/"
         },
-        "outputId": "3e94bab9-e365-444f-cf14-a03af4b0f65b"
+        "outputId": "f25fec5c-cc38-439d-fff4-96656078fe88"
       },
       "source": [
         "from hands_on_ai.chat import get_response\n",
@@ -276,15 +268,8 @@
         "    print(f\"❌ Connection issue: {e}\")\n",
         "    print(\"You can still work on the data processing foundation without this.\")"
       ],
-      "execution_count": 3,
+      "execution_count": 36,
       "outputs": [
-        {
-          "output_type": "stream",
-          "name": "stdout",
-          "text": [
-            "🤖 Thinking really hard with 'llama3.2'...\n"
-          ]
-        },
         {
           "output_type": "stream",
           "name": "stderr",
@@ -297,7 +282,7 @@
           "output_type": "stream",
           "name": "stdout",
           "text": [
-            "Oops! I got a little tangled up... Let's try that again 😊\n"
+            "Hang tight, I'm thinking... trying again!\n"
           ]
         },
         {
@@ -372,7 +357,7 @@
         "colab": {
           "base_uri": "https://localhost:8080/"
         },
-        "outputId": "d4d73ca4-2dc7-45f7-9041-d44d3230379f"
+        "outputId": "b8886b80-d939-463e-ee9a-aa3c17bcf8c4"
       },
       "source": [
         "# 🤖 AI Collaboration Opportunity:\n",
@@ -392,7 +377,7 @@
         "print(\"📋 Sample transaction data created:\")\n",
         "print(df_sample)"
       ],
-      "execution_count": 4,
+      "execution_count": 37,
       "outputs": [
         {
           "output_type": "stream",
@@ -629,7 +614,7 @@
         "colab": {
           "base_uri": "https://localhost:8080/"
         },
-        "outputId": "f328af47-12d0-4c3d-8c57-05a4efe584fb"
+        "outputId": "387ecd3d-4361-425e-fffb-2d4c00e8423a"
       },
       "source": [
         "# 🤖 AI Collaboration: Data Loading and Cleaning Function\n",
@@ -693,7 +678,7 @@
         "print(\"✅ Cleaned transaction data:\")\n",
         "print(clean_data)\n"
       ],
-      "execution_count": 5,
+      "execution_count": 38,
       "outputs": [
         {
           "output_type": "stream",
@@ -717,7 +702,7 @@
         "colab": {
           "base_uri": "https://localhost:8080/"
         },
-        "outputId": "7c3f6539-62b5-4407-bd8a-e1aaac39b6c0"
+        "outputId": "8cb604a2-bb85-411e-8fd8-16cb6de74db1"
       },
       "source": [
         "# 🤖 AI Collaboration: Spending Analysis Function\n",
@@ -765,7 +750,7 @@
         "print(\"✅ Spending analysis:\")\n",
         "print(analysis)\n"
       ],
-      "execution_count": 6,
+      "execution_count": 39,
       "outputs": [
         {
           "output_type": "stream",
@@ -784,7 +769,7 @@
         "colab": {
           "base_uri": "https://localhost:8080/"
         },
-        "outputId": "04d90de6-de53-480f-b138-2883b6fb2daf"
+        "outputId": "e13c1ed2-3a6d-42c8-f7cc-4f939b07981a"
       },
       "source": [
         "# 🤖 AI Collaboration: Business Insights Generator\n",
@@ -837,7 +822,7 @@
         "recommendations = generate_financial_recommendations(analysis)\n",
         "print(recommendations)\n"
       ],
-      "execution_count": 7,
+      "execution_count": 40,
       "outputs": [
         {
           "output_type": "stream",
@@ -887,7 +872,7 @@
         "colab": {
           "base_uri": "https://localhost:8080/"
         },
-        "outputId": "821775b3-46a2-4a52-9974-9b372cd531b9"
+        "outputId": "088294b1-ed91-48d5-d80a-e2a9ed82cd2d"
       },
       "source": [
         "# 🤖 AI Collaboration: Financial Advice Chatbot\n",
@@ -939,7 +924,7 @@
         "# Test chatbot\n",
         "print(finance_chatbot_response(\"How can I save more money?\", analysis))\n"
       ],
-      "execution_count": 8,
+      "execution_count": 41,
       "outputs": [
         {
           "output_type": "stream",
@@ -966,7 +951,7 @@
         "colab": {
           "base_uri": "https://localhost:8080/"
         },
-        "outputId": "f0e2d4c6-cd57-40a3-86d7-27a4d4c320ce"
+        "outputId": "cb33bbc0-97df-4c2a-90f8-b4f335ab76bb"
       },
       "source": [
         "# 🤖 AI Collaboration: Document Retrieval Setup\n",
@@ -1018,7 +1003,7 @@
         "# Test RAG-style retrieval\n",
         "print(retrieve_financial_guidance(\"What is a good budgeting strategy?\"))\n"
       ],
-      "execution_count": 9,
+      "execution_count": 42,
       "outputs": [
         {
           "output_type": "stream",
@@ -1045,7 +1030,7 @@
         "colab": {
           "base_uri": "https://localhost:8080/"
         },
-        "outputId": "71d47bd9-17bc-489a-8634-00b049531c83"
+        "outputId": "0b5e77d0-5377-466a-8c8a-3edb6c1eb341"
       },
       "source": [
         "# 🤖 AI Collaboration: Custom Tool Development\n",
@@ -1089,7 +1074,7 @@
         "# Test custom tool\n",
         "print(savings_goal_calculator(200, 150, 1000))\n"
       ],
-      "execution_count": 10,
+      "execution_count": 43,
       "outputs": [
         {
           "output_type": "stream",
@@ -1121,7 +1106,7 @@
           "base_uri": "https://localhost:8080/",
           "height": 611
         },
-        "outputId": "60454e05-dcba-4d55-c789-ea990e6e14f0"
+        "outputId": "27b223e5-c36f-452e-e748-d30bef3efc3c"
       },
       "source": [
         "# 🤖 AI Collaboration: Professional UI Design\n",
@@ -1194,14 +1179,14 @@
         "demo = create_finance_assistant_ui()\n",
         "demo.launch(share=True)\n"
       ],
-      "execution_count": 11,
+      "execution_count": 44,
       "outputs": [
         {
           "output_type": "stream",
           "name": "stdout",
           "text": [
             "Colab notebook detected. To show errors in colab notebook, set debug=True in launch()\n",
-            "* Running on public URL: https://09025415a363f175ff.gradio.live\n",
+            "* Running on public URL: https://74639c5430cee27337.gradio.live\n",
             "\n",
             "This share link expires in 1 week. For free permanent hosting and GPU upgrades, run `gradio deploy` from the terminal in the working directory to deploy to Hugging Face Spaces (https://huggingface.co/spaces)\n"
           ]
@@ -1213,7 +1198,7 @@
               "<IPython.core.display.HTML object>"
             ],
             "text/html": [
-              "<div><iframe src=\"https://09025415a363f175ff.gradio.live\" width=\"100%\" height=\"500\" allow=\"autoplay; camera; microphone; clipboard-read; clipboard-write;\" frameborder=\"0\" allowfullscreen></iframe></div>"
+              "<div><iframe src=\"https://74639c5430cee27337.gradio.live\" width=\"100%\" height=\"500\" allow=\"autoplay; camera; microphone; clipboard-read; clipboard-write;\" frameborder=\"0\" allowfullscreen></iframe></div>"
             ]
           },
           "metadata": {}
@@ -1224,7 +1209,7 @@
             "text/plain": []
           },
           "metadata": {},
-          "execution_count": 11
+          "execution_count": 44
         }
       ]
     },
@@ -1266,7 +1251,7 @@
         "colab": {
           "base_uri": "https://localhost:8080/"
         },
-        "outputId": "67c6f9bd-9f1f-4492-82fc-1cd8d722c248"
+        "outputId": "3d9816ec-9ceb-4ba5-a5d3-da955905ee04"
       },
       "source": [
         "# 🤖 AI Collaboration: Comprehensive Test Suite\n",
@@ -1350,7 +1335,7 @@
         "except Exception as e:\n",
         "    print(f\"⚠️ Test error: {e}\")\n"
       ],
-      "execution_count": 12,
+      "execution_count": 45,
       "outputs": [
         {
           "output_type": "stream",
@@ -1382,7 +1367,7 @@
         "colab": {
           "base_uri": "https://localhost:8080/"
         },
-        "outputId": "dd72f3c0-ea71-4519-f298-0ff8cb05c47a"
+        "outputId": "a5cb9d5f-27b5-4435-82b6-5939689d124b"
       },
       "source": [
         "# 🤖 AI Collaboration: Integration Testing\n",
@@ -1436,7 +1421,7 @@
         "except Exception as e:\n",
         "    print(f\"⚠️ Integration test issue: {e}\")\n"
       ],
-      "execution_count": 13,
+      "execution_count": 46,
       "outputs": [
         {
           "output_type": "stream",
@@ -1519,6 +1504,64 @@
         "\n",
         "*Remember to document all AI collaborations in your Developer's Diary and maintain regular GitHub commits throughout your development process.*\n"
       ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "print(\"Testing Smart Finance Assistant...\")\n",
+        "\n",
+        "try:\n",
+        "    test_result = savings_goal_calculator(200, 150, 1000)\n",
+        "    print(\"✅ Savings calculator test passed\")\n",
+        "except Exception as e:\n",
+        "    print(\"❌ Savings calculator issue:\", e)\n",
+        "\n",
+        "try:\n",
+        "    spending_test = analyze_spending_patterns(clean_data)\n",
+        "    print(\"✅ Spending analysis test passed\")\n",
+        "except Exception as e:\n",
+        "    print(\"❌ Spending analysis issue:\", e)\n",
+        "\n",
+        "try:\n",
+        "    rag_test = retrieve_financial_guidance(\"budgeting\")\n",
+        "    print(\"✅ RAG retrieval test passed\")\n",
+        "except Exception as e:\n",
+        "    print(\"❌ RAG retrieval issue:\", e)\n",
+        "\n",
+        "print(\"✅ Testing section completed\")"
+      ],
+      "metadata": {
+        "id": "PRWQ1hSrDH5j",
+        "outputId": "b4c981ed-6643-4c19-e21a-c90601c72078",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        }
+      },
+      "execution_count": 47,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Testing Smart Finance Assistant...\n",
+            "✅ Savings calculator test passed\n",
+            "✅ Spending analysis test passed\n",
+            "✅ RAG retrieval test passed\n",
+            "✅ Testing section completed\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## Final Reflection\n",
+        "\n",
+        "This project improved my understanding of Python programming, financial data analysis, AI collaboration, and UI development. I learned how AI tools can support software development when combined with testing, debugging, and human review."
+      ],
+      "metadata": {
+        "id": "l_bIDoDWDtmN"
+      }
     }
   ],
   "metadata": {
