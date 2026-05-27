@@ -1,0 +1,1537 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/a24565299-png/python-study/blob/main/smart_finance_assistant_Junmo-Kim\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "8xZPMRw-6Wrc"
+      },
+      "source": [
+        "# 🏦 Project Overview\n",
+        "\n",
+        "Welcome to your **Smart Finance Assistant** development journey! This notebook will evolve from basic CSV processing to a complete AI-powered finance application.\n",
+        "\n",
+        "**Final Application Components:**\n",
+        "- 💬 **AI Chat Interface** - Financial advice personality\n",
+        "- 📊 **Data Analysis** - CSV transaction processing  \n",
+        "- 🔍 **RAG System** - Retrieval from financial documents\n",
+        "- 🛠️ **Custom Tools** - Calculators and utilities\n",
+        "- 🌐 **Gradio UI** - Professional web interface\n",
+        "\n",
+        "**Development Approach**: Build progressively from foundation to advanced features, using AI collaboration throughout."
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "PGoLvODB6Wrv"
+      },
+      "source": [
+        "---\n",
+        "\n",
+        "# 🚀 Getting Started: Foundation Setup\n",
+        "\n",
+        "## Initial Setup\n",
+        "This cell installs the necessary libraries. In a Colab environment, you would uncomment the first line."
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "gHc2i7Cw6Wrx",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "outputId": "927fac02-e5a0-45f1-f073-502ce89aec17"
+      },
+      "source": [
+        "# Install required packages in Google Colab\n",
+        "!pip install gradio pandas hands-on-ai\n",
+        "\n",
+        "# Import core libraries\n",
+        "import pandas as pd\n",
+        "import numpy as np\n",
+        "from datetime import datetime\n",
+        "import warnings\n",
+        "warnings.filterwarnings('ignore')\n",
+        "\n",
+        "print(\"📦 Core libraries loaded successfully!\")\n",
+        "print(f\"Pandas version: {pd.__version__}\")\n"
+      ],
+      "execution_count": 1,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Requirement already satisfied: gradio in /usr/local/lib/python3.12/dist-packages (5.50.0)\n",
+            "Requirement already satisfied: pandas in /usr/local/lib/python3.12/dist-packages (2.2.2)\n",
+            "Collecting hands-on-ai\n",
+            "  Downloading hands_on_ai-0.2.1-py3-none-any.whl.metadata (9.2 kB)\n",
+            "Requirement already satisfied: aiofiles<25.0,>=22.0 in /usr/local/lib/python3.12/dist-packages (from gradio) (24.1.0)\n",
+            "Requirement already satisfied: anyio<5.0,>=3.0 in /usr/local/lib/python3.12/dist-packages (from gradio) (4.13.0)\n",
+            "Requirement already satisfied: brotli>=1.1.0 in /usr/local/lib/python3.12/dist-packages (from gradio) (1.2.0)\n",
+            "Requirement already satisfied: fastapi<1.0,>=0.115.2 in /usr/local/lib/python3.12/dist-packages (from gradio) (0.136.1)\n",
+            "Requirement already satisfied: ffmpy in /usr/local/lib/python3.12/dist-packages (from gradio) (1.0.0)\n",
+            "Requirement already satisfied: gradio-client==1.14.0 in /usr/local/lib/python3.12/dist-packages (from gradio) (1.14.0)\n",
+            "Requirement already satisfied: groovy~=0.1 in /usr/local/lib/python3.12/dist-packages (from gradio) (0.1.2)\n",
+            "Requirement already satisfied: httpx<1.0,>=0.24.1 in /usr/local/lib/python3.12/dist-packages (from gradio) (0.28.1)\n",
+            "Requirement already satisfied: huggingface-hub<2.0,>=0.33.5 in /usr/local/lib/python3.12/dist-packages (from gradio) (1.16.1)\n",
+            "Requirement already satisfied: jinja2<4.0 in /usr/local/lib/python3.12/dist-packages (from gradio) (3.1.6)\n",
+            "Requirement already satisfied: markupsafe<4.0,>=2.0 in /usr/local/lib/python3.12/dist-packages (from gradio) (3.0.3)\n",
+            "Requirement already satisfied: numpy<3.0,>=1.0 in /usr/local/lib/python3.12/dist-packages (from gradio) (2.0.2)\n",
+            "Requirement already satisfied: orjson~=3.0 in /usr/local/lib/python3.12/dist-packages (from gradio) (3.11.9)\n",
+            "Requirement already satisfied: packaging in /usr/local/lib/python3.12/dist-packages (from gradio) (26.2)\n",
+            "Requirement already satisfied: pillow<12.0,>=8.0 in /usr/local/lib/python3.12/dist-packages (from gradio) (11.3.0)\n",
+            "Requirement already satisfied: pydantic<=2.12.3,>=2.0 in /usr/local/lib/python3.12/dist-packages (from gradio) (2.12.3)\n",
+            "Requirement already satisfied: pydub in /usr/local/lib/python3.12/dist-packages (from gradio) (0.25.1)\n",
+            "Requirement already satisfied: python-multipart>=0.0.18 in /usr/local/lib/python3.12/dist-packages (from gradio) (0.0.29)\n",
+            "Requirement already satisfied: pyyaml<7.0,>=5.0 in /usr/local/lib/python3.12/dist-packages (from gradio) (6.0.3)\n",
+            "Requirement already satisfied: ruff>=0.9.3 in /usr/local/lib/python3.12/dist-packages (from gradio) (0.15.14)\n",
+            "Requirement already satisfied: safehttpx<0.2.0,>=0.1.6 in /usr/local/lib/python3.12/dist-packages (from gradio) (0.1.7)\n",
+            "Requirement already satisfied: semantic-version~=2.0 in /usr/local/lib/python3.12/dist-packages (from gradio) (2.10.0)\n",
+            "Requirement already satisfied: starlette<1.0,>=0.40.0 in /usr/local/lib/python3.12/dist-packages (from gradio) (0.52.1)\n",
+            "Requirement already satisfied: tomlkit<0.14.0,>=0.12.0 in /usr/local/lib/python3.12/dist-packages (from gradio) (0.13.3)\n",
+            "Requirement already satisfied: typer<1.0,>=0.12 in /usr/local/lib/python3.12/dist-packages (from gradio) (0.25.1)\n",
+            "Requirement already satisfied: typing-extensions~=4.0 in /usr/local/lib/python3.12/dist-packages (from gradio) (4.15.0)\n",
+            "Requirement already satisfied: uvicorn>=0.14.0 in /usr/local/lib/python3.12/dist-packages (from gradio) (0.47.0)\n",
+            "Requirement already satisfied: fsspec in /usr/local/lib/python3.12/dist-packages (from gradio-client==1.14.0->gradio) (2025.3.0)\n",
+            "Requirement already satisfied: websockets<16.0,>=13.0 in /usr/local/lib/python3.12/dist-packages (from gradio-client==1.14.0->gradio) (15.0.1)\n",
+            "Requirement already satisfied: python-dateutil>=2.8.2 in /usr/local/lib/python3.12/dist-packages (from pandas) (2.9.0.post0)\n",
+            "Requirement already satisfied: pytz>=2020.1 in /usr/local/lib/python3.12/dist-packages (from pandas) (2025.2)\n",
+            "Requirement already satisfied: tzdata>=2022.7 in /usr/local/lib/python3.12/dist-packages (from pandas) (2026.2)\n",
+            "Requirement already satisfied: requests in /usr/local/lib/python3.12/dist-packages (from hands-on-ai) (2.32.4)\n",
+            "Requirement already satisfied: python-fasthtml in /usr/local/lib/python3.12/dist-packages (from hands-on-ai) (0.12.50)\n",
+            "Collecting python-docx (from hands-on-ai)\n",
+            "  Downloading python_docx-1.2.0-py3-none-any.whl.metadata (2.0 kB)\n",
+            "Collecting pymupdf (from hands-on-ai)\n",
+            "  Downloading pymupdf-1.27.2.3-cp310-abi3-manylinux_2_28_x86_64.whl.metadata (24 kB)\n",
+            "Requirement already satisfied: scikit-learn in /usr/local/lib/python3.12/dist-packages (from hands-on-ai) (1.6.1)\n",
+            "Collecting instructor>=1.11.0 (from hands-on-ai)\n",
+            "  Downloading instructor-1.15.1-py3-none-any.whl.metadata (12 kB)\n",
+            "Requirement already satisfied: idna>=2.8 in /usr/local/lib/python3.12/dist-packages (from anyio<5.0,>=3.0->gradio) (3.15)\n",
+            "Requirement already satisfied: typing-inspection>=0.4.2 in /usr/local/lib/python3.12/dist-packages (from fastapi<1.0,>=0.115.2->gradio) (0.4.2)\n",
+            "Requirement already satisfied: annotated-doc>=0.0.2 in /usr/local/lib/python3.12/dist-packages (from fastapi<1.0,>=0.115.2->gradio) (0.0.4)\n",
+            "Requirement already satisfied: certifi in /usr/local/lib/python3.12/dist-packages (from httpx<1.0,>=0.24.1->gradio) (2026.5.20)\n",
+            "Requirement already satisfied: httpcore==1.* in /usr/local/lib/python3.12/dist-packages (from httpx<1.0,>=0.24.1->gradio) (1.0.9)\n",
+            "Requirement already satisfied: h11>=0.16 in /usr/local/lib/python3.12/dist-packages (from httpcore==1.*->httpx<1.0,>=0.24.1->gradio) (0.16.0)\n",
+            "Requirement already satisfied: filelock>=3.10.0 in /usr/local/lib/python3.12/dist-packages (from huggingface-hub<2.0,>=0.33.5->gradio) (3.29.0)\n",
+            "Requirement already satisfied: hf-xet<2.0.0,>=1.4.3 in /usr/local/lib/python3.12/dist-packages (from huggingface-hub<2.0,>=0.33.5->gradio) (1.5.0)\n",
+            "Requirement already satisfied: tqdm>=4.42.1 in /usr/local/lib/python3.12/dist-packages (from huggingface-hub<2.0,>=0.33.5->gradio) (4.67.3)\n",
+            "Requirement already satisfied: aiohttp<4.0.0,>=3.9.1 in /usr/local/lib/python3.12/dist-packages (from instructor>=1.11.0->hands-on-ai) (3.13.5)\n",
+            "Requirement already satisfied: docstring-parser<1.0,>=0.16 in /usr/local/lib/python3.12/dist-packages (from instructor>=1.11.0->hands-on-ai) (0.18.0)\n",
+            "Collecting jiter<0.14,>=0.6.1 (from instructor>=1.11.0->hands-on-ai)\n",
+            "  Downloading jiter-0.13.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (5.2 kB)\n",
+            "Requirement already satisfied: openai<3.0.0,>=2.0.0 in /usr/local/lib/python3.12/dist-packages (from instructor>=1.11.0->hands-on-ai) (2.37.0)\n",
+            "Requirement already satisfied: pydantic-core<3.0.0,>=2.18.0 in /usr/local/lib/python3.12/dist-packages (from instructor>=1.11.0->hands-on-ai) (2.41.4)\n",
+            "Requirement already satisfied: rich<15.0.0,>=13.7.0 in /usr/local/lib/python3.12/dist-packages (from instructor>=1.11.0->hands-on-ai) (13.9.4)\n",
+            "Requirement already satisfied: tenacity<10.0.0,>=8.2.3 in /usr/local/lib/python3.12/dist-packages (from instructor>=1.11.0->hands-on-ai) (9.1.4)\n",
+            "Requirement already satisfied: annotated-types>=0.6.0 in /usr/local/lib/python3.12/dist-packages (from pydantic<=2.12.3,>=2.0->gradio) (0.7.0)\n",
+            "Requirement already satisfied: six>=1.5 in /usr/local/lib/python3.12/dist-packages (from python-dateutil>=2.8.2->pandas) (1.17.0)\n",
+            "Requirement already satisfied: charset_normalizer<4,>=2 in /usr/local/lib/python3.12/dist-packages (from requests->hands-on-ai) (3.4.7)\n",
+            "Requirement already satisfied: urllib3<3,>=1.21.1 in /usr/local/lib/python3.12/dist-packages (from requests->hands-on-ai) (2.5.0)\n",
+            "Requirement already satisfied: click>=8.2.1 in /usr/local/lib/python3.12/dist-packages (from typer<1.0,>=0.12->gradio) (8.4.0)\n",
+            "Requirement already satisfied: shellingham>=1.3.0 in /usr/local/lib/python3.12/dist-packages (from typer<1.0,>=0.12->gradio) (1.5.4)\n",
+            "Requirement already satisfied: lxml>=3.1.0 in /usr/local/lib/python3.12/dist-packages (from python-docx->hands-on-ai) (6.1.1)\n",
+            "Requirement already satisfied: fastcore>=1.12.16 in /usr/local/lib/python3.12/dist-packages (from python-fasthtml->hands-on-ai) (1.13.2)\n",
+            "Requirement already satisfied: oauthlib in /usr/local/lib/python3.12/dist-packages (from python-fasthtml->hands-on-ai) (3.3.1)\n",
+            "Requirement already satisfied: itsdangerous in /usr/local/lib/python3.12/dist-packages (from python-fasthtml->hands-on-ai) (2.2.0)\n",
+            "Requirement already satisfied: fastlite>=0.1.1 in /usr/local/lib/python3.12/dist-packages (from python-fasthtml->hands-on-ai) (0.2.4)\n",
+            "Requirement already satisfied: beautifulsoup4 in /usr/local/lib/python3.12/dist-packages (from python-fasthtml->hands-on-ai) (4.13.5)\n",
+            "Requirement already satisfied: scipy>=1.6.0 in /usr/local/lib/python3.12/dist-packages (from scikit-learn->hands-on-ai) (1.16.3)\n",
+            "Requirement already satisfied: joblib>=1.2.0 in /usr/local/lib/python3.12/dist-packages (from scikit-learn->hands-on-ai) (1.5.3)\n",
+            "Requirement already satisfied: threadpoolctl>=3.1.0 in /usr/local/lib/python3.12/dist-packages (from scikit-learn->hands-on-ai) (3.6.0)\n",
+            "Requirement already satisfied: aiohappyeyeballs>=2.5.0 in /usr/local/lib/python3.12/dist-packages (from aiohttp<4.0.0,>=3.9.1->instructor>=1.11.0->hands-on-ai) (2.6.2)\n",
+            "Requirement already satisfied: aiosignal>=1.4.0 in /usr/local/lib/python3.12/dist-packages (from aiohttp<4.0.0,>=3.9.1->instructor>=1.11.0->hands-on-ai) (1.4.0)\n",
+            "Requirement already satisfied: attrs>=17.3.0 in /usr/local/lib/python3.12/dist-packages (from aiohttp<4.0.0,>=3.9.1->instructor>=1.11.0->hands-on-ai) (26.1.0)\n",
+            "Requirement already satisfied: frozenlist>=1.1.1 in /usr/local/lib/python3.12/dist-packages (from aiohttp<4.0.0,>=3.9.1->instructor>=1.11.0->hands-on-ai) (1.8.0)\n",
+            "Requirement already satisfied: multidict<7.0,>=4.5 in /usr/local/lib/python3.12/dist-packages (from aiohttp<4.0.0,>=3.9.1->instructor>=1.11.0->hands-on-ai) (6.7.1)\n",
+            "Requirement already satisfied: propcache>=0.2.0 in /usr/local/lib/python3.12/dist-packages (from aiohttp<4.0.0,>=3.9.1->instructor>=1.11.0->hands-on-ai) (0.5.2)\n",
+            "Requirement already satisfied: yarl<2.0,>=1.17.0 in /usr/local/lib/python3.12/dist-packages (from aiohttp<4.0.0,>=3.9.1->instructor>=1.11.0->hands-on-ai) (1.24.2)\n",
+            "Requirement already satisfied: apswutils>=0.1.2 in /usr/local/lib/python3.12/dist-packages (from fastlite>=0.1.1->python-fasthtml->hands-on-ai) (0.1.2)\n",
+            "Requirement already satisfied: distro<2,>=1.7.0 in /usr/local/lib/python3.12/dist-packages (from openai<3.0.0,>=2.0.0->instructor>=1.11.0->hands-on-ai) (1.9.0)\n",
+            "Requirement already satisfied: sniffio in /usr/local/lib/python3.12/dist-packages (from openai<3.0.0,>=2.0.0->instructor>=1.11.0->hands-on-ai) (1.3.1)\n",
+            "Requirement already satisfied: markdown-it-py>=2.2.0 in /usr/local/lib/python3.12/dist-packages (from rich<15.0.0,>=13.7.0->instructor>=1.11.0->hands-on-ai) (4.2.0)\n",
+            "Requirement already satisfied: pygments<3.0.0,>=2.13.0 in /usr/local/lib/python3.12/dist-packages (from rich<15.0.0,>=13.7.0->instructor>=1.11.0->hands-on-ai) (2.20.0)\n",
+            "Requirement already satisfied: httptools>=0.6.3 in /usr/local/lib/python3.12/dist-packages (from uvicorn[standard]>=0.30->python-fasthtml->hands-on-ai) (0.7.1)\n",
+            "Requirement already satisfied: python-dotenv>=0.13 in /usr/local/lib/python3.12/dist-packages (from uvicorn[standard]>=0.30->python-fasthtml->hands-on-ai) (1.2.2)\n",
+            "Requirement already satisfied: uvloop>=0.15.1 in /usr/local/lib/python3.12/dist-packages (from uvicorn[standard]>=0.30->python-fasthtml->hands-on-ai) (0.22.1)\n",
+            "Requirement already satisfied: watchfiles>=0.20 in /usr/local/lib/python3.12/dist-packages (from uvicorn[standard]>=0.30->python-fasthtml->hands-on-ai) (1.2.0)\n",
+            "Requirement already satisfied: soupsieve>1.2 in /usr/local/lib/python3.12/dist-packages (from beautifulsoup4->python-fasthtml->hands-on-ai) (2.8.3)\n",
+            "Requirement already satisfied: apsw in /usr/local/lib/python3.12/dist-packages (from apswutils>=0.1.2->fastlite>=0.1.1->python-fasthtml->hands-on-ai) (3.53.1.0)\n",
+            "Requirement already satisfied: mdurl~=0.1 in /usr/local/lib/python3.12/dist-packages (from markdown-it-py>=2.2.0->rich<15.0.0,>=13.7.0->instructor>=1.11.0->hands-on-ai) (0.1.2)\n",
+            "Downloading hands_on_ai-0.2.1-py3-none-any.whl (143 kB)\n",
+            "\u001b[2K   \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m143.7/143.7 kB\u001b[0m \u001b[31m7.2 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hDownloading instructor-1.15.1-py3-none-any.whl (178 kB)\n",
+            "\u001b[2K   \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m178.2/178.2 kB\u001b[0m \u001b[31m7.2 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hDownloading pymupdf-1.27.2.3-cp310-abi3-manylinux_2_28_x86_64.whl (25.0 MB)\n",
+            "\u001b[2K   \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m25.0/25.0 MB\u001b[0m \u001b[31m17.5 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hDownloading python_docx-1.2.0-py3-none-any.whl (252 kB)\n",
+            "\u001b[2K   \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m253.0/253.0 kB\u001b[0m \u001b[31m11.3 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hDownloading jiter-0.13.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (360 kB)\n",
+            "\u001b[2K   \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m360.7/360.7 kB\u001b[0m \u001b[31m14.3 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hInstalling collected packages: python-docx, pymupdf, jiter, instructor, hands-on-ai\n",
+            "  Attempting uninstall: jiter\n",
+            "    Found existing installation: jiter 0.15.0\n",
+            "    Uninstalling jiter-0.15.0:\n",
+            "      Successfully uninstalled jiter-0.15.0\n",
+            "Successfully installed hands-on-ai-0.2.1 instructor-1.15.1 jiter-0.13.0 pymupdf-1.27.2.3 python-docx-1.2.0\n",
+            "📦 Core libraries loaded successfully!\n",
+            "Pandas version: 2.2.2\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "PoY4IETF6Wr3"
+      },
+      "source": [
+        "## Hands-on-AI Configuration\n",
+        "\n",
+        "Set up the hands-on-ai package for advanced features (chat, RAG, tools):"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "wj6I_vs_6Wr5",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "outputId": "13af2542-f870-4e55-a747-3ca55ff3c323"
+      },
+      "source": [
+        "import os\n",
+        "from getpass import getpass\n",
+        "\n",
+        "# Configure hands-on-ai server connection\n",
+        "os.environ['HANDS_ON_AI_SERVER'] = 'https://ollama.serveur.au'\n",
+        "os.environ['HANDS_ON_AI_MODEL'] = 'llama3.2'\n",
+        "\n",
+        "# The assignment specification says the API key this semester is: isys2001-assignment-key\n",
+        "os.environ['HANDS_ON_AI_API_KEY'] = 'isys2001-assignment-key'\n",
+        "\n",
+        "print(\"🔑 Hands-on-AI configured successfully!\")\n"
+      ],
+      "execution_count": 2,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "🔑 Hands-on-AI configured successfully!\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "The API key this semester is:  **isys2001-assignment-key**"
+      ],
+      "metadata": {
+        "id": "ZwTuAyAUgzSr"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "FwJnFo-c6Wr9"
+      },
+      "source": [
+        "## Connection Test\n",
+        "\n",
+        "Test that everything is working correctly:"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "D8etbQHl6Wr-",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "outputId": "3e94bab9-e365-444f-cf14-a03af4b0f65b"
+      },
+      "source": [
+        "from hands_on_ai.chat import get_response\n",
+        "\n",
+        "# Test the connection to the hands-on-ai server\n",
+        "try:\n",
+        "    response = get_response(\"Hello! I'm building a Smart Finance Assistant.\")\n",
+        "    print(\"✅ Hands-on-AI connection successful!\")\n",
+        "    print(f\"Response: {response}\")\n",
+        "except Exception as e:\n",
+        "    print(f\"❌ Connection issue: {e}\")\n",
+        "    print(\"You can still work on the data processing foundation without this.\")"
+      ],
+      "execution_count": 3,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "🤖 Thinking really hard with 'llama3.2'...\n"
+          ]
+        },
+        {
+          "output_type": "stream",
+          "name": "stderr",
+          "text": [
+            "[WARNING] Error during request (attempt 1): Connection error.\n",
+            "WARNING:hands_on_ai:Error during request (attempt 1): Connection error.\n"
+          ]
+        },
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Oops! I got a little tangled up... Let's try that again 😊\n"
+          ]
+        },
+        {
+          "output_type": "stream",
+          "name": "stderr",
+          "text": [
+            "[WARNING] Error during request (attempt 2): Connection error.\n",
+            "WARNING:hands_on_ai:Error during request (attempt 2): Connection error.\n"
+          ]
+        },
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "✅ Hands-on-AI connection successful!\n",
+            "Response: ❌ Error: Connection error.\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "raw",
+      "metadata": {
+        "id": "tjjxTr-k6WsD"
+      },
+      "source": [
+        "---"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "5ygz5Y8b6WsG"
+      },
+      "source": [
+        "# 🏗️ Foundation: Data Processing Skills\n",
+        "\n",
+        "Before building advanced features, establish solid data processing foundations. This section focuses on CSV transaction analysis - the core of your finance assistant.\n",
+        "\n",
+        "## Foundation Skill Checkpoint ✅\n",
+        "\n",
+        "**Master these basics before advancing to chat/RAG/tools:**\n",
+        "- [ ] Load and clean CSV transaction data\n",
+        "- [ ] Handle real-world data issues (dollar signs, missing values)\n",
+        "- [ ] Calculate spending summaries by category  \n",
+        "- [ ] Generate business-appropriate insights\n",
+        "- [ ] Format output for professional presentation\n",
+        "- [ ] Test functions with various data scenarios\n",
+        "\n",
+        "::: {.callout-tip}\n",
+        "## 🤖 AI Collaboration Strategy\n",
+        "\n",
+        "For this foundation work, use AI to:\n",
+        "1. **Generate initial code** with specific business context\n",
+        "2. **Handle data cleaning** and validation\n",
+        "3. **Create professional formatting** for outputs\n",
+        "4. **Suggest business insights** from data patterns\n",
+        "5. **Help with testing** edge cases and error handling\n",
+        "\n",
+        "**Remember**: You're directing AI like a junior developer - always review and improve their suggestions!\n",
+        ":::\n",
+        "\n",
+        "## Sample Transaction Data Setup\n",
+        "\n",
+        "Create or load sample transaction data to work with:"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "8QK1sI2Q6WsH",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "outputId": "d4d73ca4-2dc7-45f7-9041-d44d3230379f"
+      },
+      "source": [
+        "# 🤖 AI Collaboration Opportunity:\n",
+        "# Ask AI to help you create realistic sample transaction data\n",
+        "# Include Australian businesses and various spending categories\n",
+        "\n",
+        "# Sample data structure for testing\n",
+        "sample_transactions = {\n",
+        "    'Date': ['2024-08-01', '2024-08-02', '2024-08-03', '2024-08-04', '2024-08-05'],\n",
+        "    'Amount': ['$45.50', '$12.00', '$89.95', '$3.50', '-$25.00'],  # Note: includes $ signs and refund\n",
+        "    'Category': ['Groceries', 'Transport', 'Entertainment', 'Coffee', 'Refund'],\n",
+        "    'Description': ['Woolworths', 'Opal Card', 'Concert Tickets', 'Campus Cafe', 'Returned Item']\n",
+        "}\n",
+        "\n",
+        "# Create DataFrame from sample data\n",
+        "df_sample = pd.DataFrame(sample_transactions)\n",
+        "print(\"📋 Sample transaction data created:\")\n",
+        "print(df_sample)"
+      ],
+      "execution_count": 4,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "📋 Sample transaction data created:\n",
+            "         Date   Amount       Category      Description\n",
+            "0  2024-08-01   $45.50      Groceries       Woolworths\n",
+            "1  2024-08-02   $12.00      Transport        Opal Card\n",
+            "2  2024-08-03   $89.95  Entertainment  Concert Tickets\n",
+            "3  2024-08-04    $3.50         Coffee      Campus Cafe\n",
+            "4  2024-08-05  -$25.00         Refund    Returned Item\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "V4YRGq-Y6WsH"
+      },
+      "source": [
+        "---\n",
+        "\n",
+        "# 📊 Six-Step Development Methodology\n",
+        "\n",
+        "Your notebook must demonstrate the six-step methodology with clear evidence of AI collaboration at each step.\n",
+        "\n",
+        "## STEP 1: Understand the Problem\n",
+        "\n",
+        "**🎯 Define Your Finance Problem**\n",
+        "\n",
+        "In this section, clearly state your chosen finance problem in business terms.\n",
+        "\n",
+        "::: {.callout-note}\n",
+        "## Problem Definition Template\n",
+        "\n",
+        "*Example: \"I want to help people understand their spending habits by analyzing their bank transaction exports. The system should identify spending patterns, highlight potential savings opportunities, and provide actionable financial insights in easy-to-understand language.\"*\n",
+        "\n",
+        "**🤖 AI Prompt to Try:**\n",
+        "```\n",
+        "\"Help me brainstorm specific personal finance problems that could be solved\n",
+        "with a CSV analysis tool. I'm interested in helping people with budgeting\n",
+        "and spending awareness. What are common financial challenges that data\n",
+        "analysis could address?\"\n",
+        "```\n",
+        "\n",
+        "**Your Problem Statement:**\n",
+        "[Write your specific finance problem here - be clear about who you're helping and what value you're providing]\n",
+        "\n",
+        "## STEP 2: Identify Inputs and Outputs\n",
+        "\n",
+        "**📥 Define Your Data Flow**\n",
+        "\n",
+        "Clearly specify what data you'll work with and what insights you'll generate.\n",
+        "\n",
+        "## Input/Output Analysis Template\n",
+        "\n",
+        "**Inputs:**\n",
+        "- CSV file with transaction data (columns: Date, Amount, Category, Description)\n",
+        "- User preferences (spending goals, categories to focus on)\n",
+        "- Time period for analysis\n",
+        "\n",
+        "**Outputs:**\n",
+        "- Total spending summary by category\n",
+        "- Average spending patterns\n",
+        "- Spending trend analysis\n",
+        "- Actionable savings recommendations\n",
+        "- Visual spending breakdown (future enhancement)\n",
+        "\n",
+        "**🤖 AI Prompt to Try:**\n",
+        "```\n",
+        "\"For a personal finance assistant that analyzes CSV transaction data,\n",
+        "what are the most valuable inputs I should collect and outputs I should\n",
+        "provide? Consider both technical data processing and business value\n",
+        "for the user.\"\n",
+        "```\n",
+        "\n",
+        "**Your Input/Output Definition:**\n",
+        "[Define your specific inputs and outputs here]\n",
+        "\n",
+        "## STEP 3: Work the Problem by Hand\n",
+        "\n",
+        "**✋ Manual Calculation Examples**\n",
+        "\n",
+        "Show 2-3 worked examples to understand the logic before coding.\n",
+        "\n",
+        "\n",
+        "## Example Business Calculation\n",
+        "\n",
+        "Given this sample data:\n",
+        "\n",
+        "| Date | Amount | Category | Description |\n",
+        "|------|--------|----------|-------------|\n",
+        "| 2024-08-01 | $45.50 | Groceries | Woolworths |\n",
+        "| 2024-08-02 | $12.00 | Transport | Opal Card |\n",
+        "| 2024-08-03 | $89.95 | Entertainment | Concert |\n",
+        "| 2024-08-04 | -$15.00 | Refund | Returned item |\n",
+        "\n",
+        "**Manual Calculations:**\n",
+        "- Total Spending: $45.50 + $12.00 + $89.95 - $15.00 = $132.45\n",
+        "- By Category: Groceries $45.50, Transport $12.00, Entertainment $89.95\n",
+        "- Average Transaction: $132.45 ÷ 4 = $33.11\n",
+        "- Insight: Entertainment represents 67% of positive spending\n",
+        "\n",
+        "**🤖 AI Prompt to Try:**\n",
+        "```\n",
+        "\"Give me 3 realistic examples of Australian transaction data with different\n",
+        "scenarios (normal spending, refunds, large purchases). Show me how to manually\n",
+        "calculate meaningful financial insights from each scenario.\"\n",
+        "```\n",
+        "\n",
+        "**Your Manual Examples:**\n",
+        "[Work through your own examples here - this helps you understand the business logic]\n",
+        "\n",
+        "## STEP 4: Write Pseudocode\n",
+        "\n",
+        "**📝 Plan Your Solution Logic**\n",
+        "\n",
+        "Sketch the algorithm in plain English before coding.\n",
+        "\n",
+        "\n",
+        "## Pseudocode Template\n",
+        "\n",
+        "```\n",
+        "FUNCTION analyze_spending_data(csv_file):\n",
+        "    // Step 1: Load and validate data\n",
+        "    - Read CSV file into DataFrame\n",
+        "    - Check for required columns (Date, Amount, Category, Description)\n",
+        "    - Handle missing or invalid data\n",
+        "    \n",
+        "    // Step 2: Clean financial data  \n",
+        "    - Remove dollar signs from Amount column\n",
+        "    - Convert to numeric values\n",
+        "    - Separate positive spending from refunds\n",
+        "    \n",
+        "    // Step 3: Calculate business metrics\n",
+        "    - Group transactions by category\n",
+        "    - Calculate totals, averages, counts per category\n",
+        "    - Identify spending patterns and outliers\n",
+        "    \n",
+        "    // Step 4: Generate insights\n",
+        "    - Calculate percentages of total spending\n",
+        "    - Identify top spending categories\n",
+        "    - Suggest potential savings opportunities\n",
+        "    \n",
+        "    // Step 5: Format for presentation\n",
+        "    - Create business-friendly output\n",
+        "    - Include currency formatting\n",
+        "    - Add explanatory text for insights\n",
+        "    \n",
+        "    RETURN formatted_analysis\n",
+        "```\n",
+        "\n",
+        "**🤖 AI Prompt to Try:**\n",
+        "```\n",
+        "\"Review my pseudocode for analyzing spending data from a CSV. Are there any\n",
+        "edge cases I'm missing? What business logic should I add to make this more\n",
+        "valuable for personal finance insights?\"\n",
+        "```\n",
+        "\n",
+        "\n",
+        "**Your Pseudocode:**\n",
+        "[Write your detailed algorithm here]\n",
+        "\n",
+        "## STEP 5: Convert to Python\n",
+        "\n",
+        "**💻 Implementation with AI Collaboration**\n",
+        "\n",
+        "Now implement your solution using AI assistance. Focus on creating professional, business-appropriate code.\n",
+        "\n",
+        "\n",
+        "## 🤖 Implementation Strategy\n",
+        "\n",
+        "**Effective AI Prompts for Implementation:**\n",
+        "```\n",
+        "\"I'm implementing a Smart Finance Assistant. Based on my pseudocode, please create\n",
+        "a Python function that [specific functionality]. The code should:\n",
+        "- Handle real-world CSV data issues (dollar signs, missing values)\n",
+        "- Include clear comments explaining business logic\n",
+        "- Use professional variable names\n",
+        "- Format output for business presentation\n",
+        "- Include basic error handling\"\n",
+        "```\n",
+        "\n",
+        "**Remember to critique and improve AI responses before using them!**\n",
+        ":::\n",
+        "\n",
+        "### Foundation Data Processing Functions"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "mWpvXdzTT3sU"
+      },
+      "source": [
+        "## Six-Step Development Evidence\n",
+        "\n",
+        "### Step 1 – Understand the Problem\n",
+        "Many students and young workers struggle to understand where their money goes each month. The Smart Finance Assistant solves this by reading a CSV file of transactions, cleaning the data, analysing spending by category, and giving simple financial recommendations.\n",
+        "\n",
+        "### Step 2 – Identify Inputs and Outputs\n",
+        "**Inputs:** a CSV file with Date, Amount, Category, and Description columns; user questions; savings goal values.  \n",
+        "**Outputs:** cleaned transaction data, category spending summaries, total spending, recommendations, chatbot-style responses, savings goal calculations, and a Gradio interface.\n",
+        "\n",
+        "### Step 3 – Work the Problem by Hand\n",
+        "Example 1: If groceries are $45.50 and coffee is $3.50, total spending is $49.00.  \n",
+        "Example 2: If the user saves $200 per month and needs $1,000, the goal takes 5 months.  \n",
+        "Example 3: If entertainment is the highest category, the assistant should recommend reducing entertainment spending first.\n",
+        "\n",
+        "### Step 4 – Pseudocode\n",
+        "1. Load the CSV file.  \n",
+        "2. Validate that required columns exist.  \n",
+        "3. Clean the Amount column by removing dollar signs and converting values to numbers.  \n",
+        "4. Remove refunds from spending totals or treat them separately.  \n",
+        "5. Group spending by category.  \n",
+        "6. Identify the top spending category.  \n",
+        "7. Generate simple business-style recommendations.  \n",
+        "8. Display the results through a Gradio UI.  \n",
+        "9. Test normal, edge, and error cases.\n",
+        "\n",
+        "### Step 5 – Convert to Python\n",
+        "The following cells implement the loading, analysis, recommendation, chatbot, RAG-style lookup, tool, and UI functions.\n",
+        "\n",
+        "### Step 6 – Test with a Variety of Data\n",
+        "The final testing section uses assert statements and workflow tests to check whether the assistant works correctly.\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "1EgKZ3P16WsJ",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "outputId": "f328af47-12d0-4c3d-8c57-05a4efe584fb"
+      },
+      "source": [
+        "# 🤖 AI Collaboration: Data Loading and Cleaning Function\n",
+        "# AI helped design validation, cleaning, and error handling for messy CSV finance data.\n",
+        "\n",
+        "def load_and_clean_transaction_data(file_path):\n",
+        "    \"\"\"\n",
+        "    Load and clean transaction data for the Smart Finance Assistant.\n",
+        "\n",
+        "    Args:\n",
+        "        file_path: CSV path, uploaded file object, or pandas DataFrame\n",
+        "\n",
+        "    Returns:\n",
+        "        pandas.DataFrame: cleaned data with Date, Amount, Category, and Description\n",
+        "    \"\"\"\n",
+        "    try:\n",
+        "        if isinstance(file_path, pd.DataFrame):\n",
+        "            df = file_path.copy()\n",
+        "        else:\n",
+        "            df = pd.read_csv(file_path)\n",
+        "\n",
+        "        required_columns = [\"Date\", \"Amount\", \"Category\", \"Description\"]\n",
+        "        missing_columns = [col for col in required_columns if col not in df.columns]\n",
+        "        if missing_columns:\n",
+        "            raise ValueError(f\"Missing required columns: {missing_columns}\")\n",
+        "\n",
+        "        df = df[required_columns].copy()\n",
+        "\n",
+        "        # Clean dates\n",
+        "        df[\"Date\"] = pd.to_datetime(df[\"Date\"], errors=\"coerce\")\n",
+        "\n",
+        "        # Clean amounts such as \"$45.50\", \"-$25.00\", \"AUD 12.00\"\n",
+        "        df[\"Amount\"] = (\n",
+        "            df[\"Amount\"]\n",
+        "            .astype(str)\n",
+        "            .str.replace(\"$\", \"\", regex=False)\n",
+        "            .str.replace(\"AUD\", \"\", regex=False)\n",
+        "            .str.replace(\",\", \"\", regex=False)\n",
+        "            .str.strip()\n",
+        "        )\n",
+        "        df[\"Amount\"] = pd.to_numeric(df[\"Amount\"], errors=\"coerce\")\n",
+        "\n",
+        "        # Clean text fields\n",
+        "        df[\"Category\"] = df[\"Category\"].fillna(\"Uncategorised\").astype(str).str.strip()\n",
+        "        df[\"Description\"] = df[\"Description\"].fillna(\"No description\").astype(str).str.strip()\n",
+        "\n",
+        "        # Remove rows where essential numeric/date data could not be read\n",
+        "        df = df.dropna(subset=[\"Date\", \"Amount\"])\n",
+        "\n",
+        "        if df.empty:\n",
+        "            raise ValueError(\"No valid transactions found after cleaning.\")\n",
+        "\n",
+        "        df = df.sort_values(\"Date\").reset_index(drop=True)\n",
+        "        return df\n",
+        "\n",
+        "    except Exception as e:\n",
+        "        raise ValueError(f\"Could not load and clean transaction data: {e}\")\n",
+        "\n",
+        "# Test the function with sample data\n",
+        "clean_data = load_and_clean_transaction_data(df_sample)\n",
+        "print(\"✅ Cleaned transaction data:\")\n",
+        "print(clean_data)\n"
+      ],
+      "execution_count": 5,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "✅ Cleaned transaction data:\n",
+            "        Date  Amount       Category      Description\n",
+            "0 2024-08-01   45.50      Groceries       Woolworths\n",
+            "1 2024-08-02   12.00      Transport        Opal Card\n",
+            "2 2024-08-03   89.95  Entertainment  Concert Tickets\n",
+            "3 2024-08-04    3.50         Coffee      Campus Cafe\n",
+            "4 2024-08-05  -25.00         Refund    Returned Item\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "_K8KDSqg6WsK",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "outputId": "7c3f6539-62b5-4407-bd8a-e1aaac39b6c0"
+      },
+      "source": [
+        "# 🤖 AI Collaboration: Spending Analysis Function\n",
+        "# AI helped create category totals, percentages, and summary metrics.\n",
+        "\n",
+        "def analyze_spending_patterns(df):\n",
+        "    \"\"\"\n",
+        "    Analyse spending patterns and generate structured finance insights.\n",
+        "\n",
+        "    Args:\n",
+        "        df: cleaned transaction DataFrame\n",
+        "\n",
+        "    Returns:\n",
+        "        dict: analysis results\n",
+        "    \"\"\"\n",
+        "    if df is None or df.empty:\n",
+        "        raise ValueError(\"No transaction data provided.\")\n",
+        "\n",
+        "    spending_df = df[df[\"Amount\"] > 0].copy()\n",
+        "    refunds_df = df[df[\"Amount\"] < 0].copy()\n",
+        "\n",
+        "    total_spending = float(spending_df[\"Amount\"].sum())\n",
+        "    total_refunds = float(refunds_df[\"Amount\"].sum())\n",
+        "\n",
+        "    category_totals = spending_df.groupby(\"Category\")[\"Amount\"].sum().sort_values(ascending=False)\n",
+        "    category_percentages = (category_totals / total_spending * 100).round(2) if total_spending > 0 else category_totals\n",
+        "\n",
+        "    top_category = category_totals.index[0] if len(category_totals) > 0 else \"None\"\n",
+        "    top_amount = float(category_totals.iloc[0]) if len(category_totals) > 0 else 0.0\n",
+        "\n",
+        "    analysis = {\n",
+        "        \"total_spending\": round(total_spending, 2),\n",
+        "        \"total_refunds\": round(total_refunds, 2),\n",
+        "        \"net_spending\": round(float(df[\"Amount\"].sum()), 2),\n",
+        "        \"transaction_count\": int(len(df)),\n",
+        "        \"category_totals\": category_totals.round(2).to_dict(),\n",
+        "        \"category_percentages\": category_percentages.to_dict(),\n",
+        "        \"top_category\": top_category,\n",
+        "        \"top_amount\": round(top_amount, 2),\n",
+        "        \"average_transaction\": round(float(spending_df[\"Amount\"].mean()), 2) if not spending_df.empty else 0.0\n",
+        "    }\n",
+        "    return analysis\n",
+        "\n",
+        "analysis = analyze_spending_patterns(clean_data)\n",
+        "print(\"✅ Spending analysis:\")\n",
+        "print(analysis)\n"
+      ],
+      "execution_count": 6,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "✅ Spending analysis:\n",
+            "{'total_spending': 150.95, 'total_refunds': -25.0, 'net_spending': 125.95, 'transaction_count': 5, 'category_totals': {'Entertainment': 89.95, 'Groceries': 45.5, 'Transport': 12.0, 'Coffee': 3.5}, 'category_percentages': {'Entertainment': 59.59, 'Groceries': 30.14, 'Transport': 7.95, 'Coffee': 2.32}, 'top_category': 'Entertainment', 'top_amount': 89.95, 'average_transaction': 37.74}\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "B6CyokTL6WsK",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "outputId": "04d90de6-de53-480f-b138-2883b6fb2daf"
+      },
+      "source": [
+        "# 🤖 AI Collaboration: Business Insights Generator\n",
+        "# AI helped format the recommendations in a user-friendly business style.\n",
+        "\n",
+        "def generate_financial_recommendations(analysis_data):\n",
+        "    \"\"\"\n",
+        "    Generate actionable financial recommendations based on spending analysis.\n",
+        "\n",
+        "    Args:\n",
+        "        analysis_data: dictionary with spending analysis results\n",
+        "\n",
+        "    Returns:\n",
+        "        str: formatted recommendations report\n",
+        "    \"\"\"\n",
+        "    if not analysis_data:\n",
+        "        return \"No analysis data available.\"\n",
+        "\n",
+        "    total = analysis_data[\"total_spending\"]\n",
+        "    top_category = analysis_data[\"top_category\"]\n",
+        "    top_amount = analysis_data[\"top_amount\"]\n",
+        "    average = analysis_data[\"average_transaction\"]\n",
+        "\n",
+        "    report = []\n",
+        "    report.append(\"📊 Smart Finance Assistant Report\")\n",
+        "    report.append(\"=\" * 40)\n",
+        "    report.append(f\"Total spending: ${total:.2f}\")\n",
+        "    report.append(f\"Net spending after refunds: ${analysis_data['net_spending']:.2f}\")\n",
+        "    report.append(f\"Number of transactions: {analysis_data['transaction_count']}\")\n",
+        "    report.append(f\"Average spending transaction: ${average:.2f}\")\n",
+        "    report.append(\"\")\n",
+        "    report.append(\"Top spending categories:\")\n",
+        "\n",
+        "    for category, amount in analysis_data[\"category_totals\"].items():\n",
+        "        percentage = analysis_data[\"category_percentages\"].get(category, 0)\n",
+        "        report.append(f\"- {category}: ${amount:.2f} ({percentage:.1f}%)\")\n",
+        "\n",
+        "    report.append(\"\")\n",
+        "    report.append(\"Recommendations:\")\n",
+        "    if total <= 0:\n",
+        "        report.append(\"- No positive spending was found. Please upload more transaction data.\")\n",
+        "    else:\n",
+        "        report.append(f\"- Your highest spending category is {top_category} at ${top_amount:.2f}. Review this category first.\")\n",
+        "        report.append(\"- Set a weekly spending limit for the top category to improve control.\")\n",
+        "        report.append(\"- Track small repeated purchases because they can become a major monthly cost.\")\n",
+        "        report.append(\"- Try saving 10% of your total spending amount as a realistic first savings target.\")\n",
+        "\n",
+        "    return \"\\n\".join(report)\n",
+        "\n",
+        "recommendations = generate_financial_recommendations(analysis)\n",
+        "print(recommendations)\n"
+      ],
+      "execution_count": 7,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "📊 Smart Finance Assistant Report\n",
+            "========================================\n",
+            "Total spending: $150.95\n",
+            "Net spending after refunds: $125.95\n",
+            "Number of transactions: 5\n",
+            "Average spending transaction: $37.74\n",
+            "\n",
+            "Top spending categories:\n",
+            "- Entertainment: $89.95 (59.6%)\n",
+            "- Groceries: $45.50 (30.1%)\n",
+            "- Transport: $12.00 (8.0%)\n",
+            "- Coffee: $3.50 (2.3%)\n",
+            "\n",
+            "Recommendations:\n",
+            "- Your highest spending category is Entertainment at $89.95. Review this category first.\n",
+            "- Set a weekly spending limit for the top category to improve control.\n",
+            "- Track small repeated purchases because they can become a major monthly cost.\n",
+            "- Try saving 10% of your total spending amount as a realistic first savings target.\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "dGGQyhjn6WsM"
+      },
+      "source": [
+        "---\n",
+        "\n",
+        "# 🌐 Advanced Features: Integrating AI Components\n",
+        "\n",
+        "Once your foundation data processing is solid, integrate advanced AI features using hands-on-ai.\n",
+        "\n",
+        "## Chat Interface Integration"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "GPH4sGKN6WsN",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "outputId": "821775b3-46a2-4a52-9974-9b372cd531b9"
+      },
+      "source": [
+        "# 🤖 AI Collaboration: Financial Advice Chatbot\n",
+        "# AI helped create a finance-focused chatbot personality. This works even if the API is unavailable.\n",
+        "\n",
+        "try:\n",
+        "    from hands_on_ai import chat\n",
+        "except Exception:\n",
+        "    chat = None\n",
+        "\n",
+        "def create_finance_chat_personality():\n",
+        "    \"\"\"\n",
+        "    Return a finance advisor system prompt.\n",
+        "    \"\"\"\n",
+        "    return (\n",
+        "        \"You are Smart Finance Assistant, a friendly and practical personal finance helper. \"\n",
+        "        \"You explain spending patterns clearly, avoid risky financial promises, and give simple \"\n",
+        "        \"budgeting suggestions based on transaction data.\"\n",
+        "    )\n",
+        "\n",
+        "FINANCE_PERSONALITY = create_finance_chat_personality()\n",
+        "\n",
+        "def finance_chatbot_response(user_message, analysis_data=None):\n",
+        "    \"\"\"\n",
+        "    Generate a simple finance chatbot response.\n",
+        "    Uses local rules first so the app still works during API issues.\n",
+        "    \"\"\"\n",
+        "    message = str(user_message).lower()\n",
+        "\n",
+        "    if analysis_data:\n",
+        "        top = analysis_data.get(\"top_category\", \"your top category\")\n",
+        "        total = analysis_data.get(\"total_spending\", 0)\n",
+        "    else:\n",
+        "        top = \"your highest spending category\"\n",
+        "        total = 0\n",
+        "\n",
+        "    if \"coffee\" in message:\n",
+        "        return \"Coffee spending can grow quickly. Try setting a weekly coffee budget or replacing one cafe purchase per day with homemade coffee.\"\n",
+        "    if \"save\" in message or \"saving\" in message:\n",
+        "        return f\"A realistic first step is to save 10% of your tracked spending. Based on your data, that is about ${total * 0.10:.2f}.\"\n",
+        "    if \"top\" in message or \"spend\" in message:\n",
+        "        return f\"Your main focus should be {top}. Reducing this category slightly may create the biggest improvement.\"\n",
+        "\n",
+        "    return (\n",
+        "        f\"I can help you understand your spending. Based on the current data, \"\n",
+        "        f\"start by reviewing {top}, then set a small weekly budget target.\"\n",
+        "    )\n",
+        "\n",
+        "# Test chatbot\n",
+        "print(finance_chatbot_response(\"How can I save more money?\", analysis))\n"
+      ],
+      "execution_count": 8,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "A realistic first step is to save 10% of your tracked spending. Based on your data, that is about $15.09.\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "Xrns8DxA6WsN"
+      },
+      "source": [
+        "## RAG System for Financial Documents"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "MosuFUX76WsO",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "outputId": "f0e2d4c6-cd57-40a3-86d7-27a4d4c320ce"
+      },
+      "source": [
+        "# 🤖 AI Collaboration: Document Retrieval Setup\n",
+        "# This is a simple RAG-style knowledge base that retrieves relevant guidance from finance notes.\n",
+        "\n",
+        "try:\n",
+        "    from hands_on_ai import rag\n",
+        "except Exception:\n",
+        "    rag = None\n",
+        "\n",
+        "FINANCIAL_KNOWLEDGE_BASE = [\n",
+        "    {\n",
+        "        \"topic\": \"budgeting\",\n",
+        "        \"text\": \"A common budgeting method is the 50/30/20 rule: 50% needs, 30% wants, and 20% savings or debt repayment.\"\n",
+        "    },\n",
+        "    {\n",
+        "        \"topic\": \"coffee\",\n",
+        "        \"text\": \"Small repeated purchases such as coffee can become expensive over a month. Tracking frequency helps control this spending.\"\n",
+        "    },\n",
+        "    {\n",
+        "        \"topic\": \"entertainment\",\n",
+        "        \"text\": \"Entertainment spending is flexible, so it is often a good category to reduce when trying to save money.\"\n",
+        "    },\n",
+        "    {\n",
+        "        \"topic\": \"savings\",\n",
+        "        \"text\": \"A savings goal works best when it has a target amount, monthly contribution, and clear deadline.\"\n",
+        "    }\n",
+        "]\n",
+        "\n",
+        "def setup_financial_rag():\n",
+        "    \"\"\"\n",
+        "    Set up a lightweight RAG-style retriever for financial guidance.\n",
+        "    \"\"\"\n",
+        "    return FINANCIAL_KNOWLEDGE_BASE\n",
+        "\n",
+        "def retrieve_financial_guidance(question):\n",
+        "    \"\"\"\n",
+        "    Retrieve the most relevant finance guidance using simple keyword matching.\n",
+        "    \"\"\"\n",
+        "    question_lower = str(question).lower()\n",
+        "    knowledge_base = setup_financial_rag()\n",
+        "\n",
+        "    for item in knowledge_base:\n",
+        "        if item[\"topic\"] in question_lower:\n",
+        "            return item[\"text\"]\n",
+        "\n",
+        "    return \"A good general strategy is to track spending, identify the largest flexible category, and set a realistic weekly limit.\"\n",
+        "\n",
+        "# Test RAG-style retrieval\n",
+        "print(retrieve_financial_guidance(\"What is a good budgeting strategy?\"))\n"
+      ],
+      "execution_count": 9,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "A common budgeting method is the 50/30/20 rule: 50% needs, 30% wants, and 20% savings or debt repayment.\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "S4Hn5U126WsO"
+      },
+      "source": [
+        "## Custom Financial Tools"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "ub45iiSj6WsO",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "outputId": "71d47bd9-17bc-489a-8634-00b049531c83"
+      },
+      "source": [
+        "# 🤖 AI Collaboration: Custom Tool Development\n",
+        "# AI helped design the savings goal calculator with validation and clear output.\n",
+        "\n",
+        "try:\n",
+        "    from hands_on_ai import agent\n",
+        "except Exception:\n",
+        "    agent = None\n",
+        "\n",
+        "def savings_goal_calculator(current_savings, monthly_contribution, target_amount):\n",
+        "    \"\"\"\n",
+        "    Calculate how many months are needed to reach a savings goal.\n",
+        "    \"\"\"\n",
+        "    current_savings = float(current_savings)\n",
+        "    monthly_contribution = float(monthly_contribution)\n",
+        "    target_amount = float(target_amount)\n",
+        "\n",
+        "    if target_amount <= current_savings:\n",
+        "        return \"✅ Goal already reached.\"\n",
+        "    if monthly_contribution <= 0:\n",
+        "        return \"⚠️ Monthly contribution must be greater than zero.\"\n",
+        "\n",
+        "    remaining = target_amount - current_savings\n",
+        "    months_needed = int(np.ceil(remaining / monthly_contribution))\n",
+        "\n",
+        "    return (\n",
+        "        f\"🎯 Savings Goal Result\\n\"\n",
+        "        f\"Current savings: ${current_savings:.2f}\\n\"\n",
+        "        f\"Target amount: ${target_amount:.2f}\\n\"\n",
+        "        f\"Monthly contribution: ${monthly_contribution:.2f}\\n\"\n",
+        "        f\"Estimated time needed: {months_needed} month(s)\"\n",
+        "    )\n",
+        "\n",
+        "def create_savings_calculator_tool():\n",
+        "    \"\"\"\n",
+        "    Return the custom savings calculator tool.\n",
+        "    \"\"\"\n",
+        "    return savings_goal_calculator\n",
+        "\n",
+        "# Test custom tool\n",
+        "print(savings_goal_calculator(200, 150, 1000))\n"
+      ],
+      "execution_count": 10,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "🎯 Savings Goal Result\n",
+            "Current savings: $200.00\n",
+            "Target amount: $1000.00\n",
+            "Monthly contribution: $150.00\n",
+            "Estimated time needed: 6 month(s)\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "T_8SbV0N6WsP"
+      },
+      "source": [
+        "## Gradio UI Integration"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "7-ambjxd6WsP",
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 611
+        },
+        "outputId": "60454e05-dcba-4d55-c789-ea990e6e14f0"
+      },
+      "source": [
+        "# 🤖 AI Collaboration: Professional UI Design\n",
+        "# AI helped create a simple Gradio interface connecting CSV analysis, chatbot, RAG, and custom tool.\n",
+        "\n",
+        "import gradio as gr\n",
+        "\n",
+        "def analyse_uploaded_file(file):\n",
+        "    \"\"\"\n",
+        "    Gradio function: analyse uploaded CSV and return finance recommendations.\n",
+        "    \"\"\"\n",
+        "    if file is None:\n",
+        "        return \"Please upload a CSV file with Date, Amount, Category, and Description columns.\"\n",
+        "\n",
+        "    try:\n",
+        "        df = load_and_clean_transaction_data(file.name)\n",
+        "        analysis_data = analyze_spending_patterns(df)\n",
+        "        return generate_financial_recommendations(analysis_data)\n",
+        "    except Exception as e:\n",
+        "        return f\"Could not analyse the file: {e}\"\n",
+        "\n",
+        "def chat_with_assistant(message):\n",
+        "    \"\"\"\n",
+        "    Gradio function: answer finance questions using chatbot + RAG guidance.\n",
+        "    \"\"\"\n",
+        "    guidance = retrieve_financial_guidance(message)\n",
+        "    response = finance_chatbot_response(message, analysis)\n",
+        "    return f\"{response}\\n\\nRelevant guidance: {guidance}\"\n",
+        "\n",
+        "def calculate_goal(current_savings, monthly_contribution, target_amount):\n",
+        "    \"\"\"\n",
+        "    Gradio function: run savings goal calculator.\n",
+        "    \"\"\"\n",
+        "    try:\n",
+        "        return savings_goal_calculator(current_savings, monthly_contribution, target_amount)\n",
+        "    except Exception as e:\n",
+        "        return f\"Input error: {e}\"\n",
+        "\n",
+        "def create_finance_assistant_ui():\n",
+        "    \"\"\"\n",
+        "    Create a Gradio interface for the Smart Finance Assistant.\n",
+        "    \"\"\"\n",
+        "    with gr.Blocks(title=\"Smart Finance Assistant\") as demo:\n",
+        "        gr.Markdown(\"# 🏦 Smart Finance Assistant\")\n",
+        "        gr.Markdown(\"Upload transactions, receive spending insights, ask finance questions, and calculate savings goals.\")\n",
+        "\n",
+        "        with gr.Tab(\"📊 CSV Spending Analysis\"):\n",
+        "            file_input = gr.File(label=\"Upload transaction CSV\")\n",
+        "            analysis_output = gr.Textbox(label=\"Analysis Report\", lines=14)\n",
+        "            analyse_button = gr.Button(\"Analyse Transactions\")\n",
+        "            analyse_button.click(analyse_uploaded_file, inputs=file_input, outputs=analysis_output)\n",
+        "\n",
+        "        with gr.Tab(\"💬 Finance Chat\"):\n",
+        "            question_input = gr.Textbox(label=\"Ask a finance question\", placeholder=\"Example: How can I save more money?\")\n",
+        "            chat_output = gr.Textbox(label=\"Assistant Response\", lines=8)\n",
+        "            chat_button = gr.Button(\"Ask Assistant\")\n",
+        "            chat_button.click(chat_with_assistant, inputs=question_input, outputs=chat_output)\n",
+        "\n",
+        "        with gr.Tab(\"🎯 Savings Goal Tool\"):\n",
+        "            current = gr.Number(label=\"Current savings ($)\", value=0)\n",
+        "            monthly = gr.Number(label=\"Monthly contribution ($)\", value=100)\n",
+        "            target = gr.Number(label=\"Target amount ($)\", value=1000)\n",
+        "            goal_output = gr.Textbox(label=\"Goal Result\", lines=6)\n",
+        "            goal_button = gr.Button(\"Calculate Goal\")\n",
+        "            goal_button.click(calculate_goal, inputs=[current, monthly, target], outputs=goal_output)\n",
+        "\n",
+        "    return demo\n",
+        "\n",
+        "# Launch your complete application\n",
+        "demo = create_finance_assistant_ui()\n",
+        "demo.launch(share=True)\n"
+      ],
+      "execution_count": 11,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Colab notebook detected. To show errors in colab notebook, set debug=True in launch()\n",
+            "* Running on public URL: https://09025415a363f175ff.gradio.live\n",
+            "\n",
+            "This share link expires in 1 week. For free permanent hosting and GPU upgrades, run `gradio deploy` from the terminal in the working directory to deploy to Hugging Face Spaces (https://huggingface.co/spaces)\n"
+          ]
+        },
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/plain": [
+              "<IPython.core.display.HTML object>"
+            ],
+            "text/html": [
+              "<div><iframe src=\"https://09025415a363f175ff.gradio.live\" width=\"100%\" height=\"500\" allow=\"autoplay; camera; microphone; clipboard-read; clipboard-write;\" frameborder=\"0\" allowfullscreen></iframe></div>"
+            ]
+          },
+          "metadata": {}
+        },
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": []
+          },
+          "metadata": {},
+          "execution_count": 11
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "zJcPOdl_6WsQ"
+      },
+      "source": [
+        "---\n",
+        "\n",
+        "# 🧪 STEP 6: Test with a Variety of Data\n",
+        "\n",
+        "**🔍 Comprehensive Testing Strategy**\n",
+        "\n",
+        "Create thorough tests for your Smart Finance Assistant to ensure it handles real-world scenarios.\n",
+        "\n",
+        "::: {.callout-tip}\n",
+        "## 🤖 AI Collaboration for Testing\n",
+        "\n",
+        "**Effective Testing Prompts:**\n",
+        "```\n",
+        "\"Help me create comprehensive test cases for my finance assistant. Include:\n",
+        "- Normal transaction data\n",
+        "- Edge cases (refunds, large amounts, missing data)\n",
+        "- Invalid data scenarios (corrupted files, wrong formats)\n",
+        "- Business logic validation (spending calculations, recommendations)\n",
+        "Create assert statements to verify each scenario.\"\n",
+        "```\n",
+        ":::\n",
+        "\n",
+        "## Foundation Function Tests"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "5Fo6bEcP6WsQ",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "outputId": "67c6f9bd-9f1f-4492-82fc-1cd8d722c248"
+      },
+      "source": [
+        "# 🤖 AI Collaboration: Comprehensive Test Suite\n",
+        "# AI helped create normal, edge, and error tests using assert statements.\n",
+        "\n",
+        "def create_test_datasets():\n",
+        "    \"\"\"\n",
+        "    Create various test datasets for comprehensive testing.\n",
+        "    \"\"\"\n",
+        "    normal_data = pd.DataFrame({\n",
+        "        \"Date\": [\"2024-08-01\", \"2024-08-02\", \"2024-08-03\"],\n",
+        "        \"Amount\": [\"$10.00\", \"$20.00\", \"$30.00\"],\n",
+        "        \"Category\": [\"Coffee\", \"Groceries\", \"Groceries\"],\n",
+        "        \"Description\": [\"Cafe\", \"Woolworths\", \"Coles\"]\n",
+        "    })\n",
+        "\n",
+        "    edge_data = pd.DataFrame({\n",
+        "        \"Date\": [\"2024-08-01\", \"bad date\", \"2024-08-03\", \"2024-08-04\"],\n",
+        "        \"Amount\": [\"$0.00\", \"$20.00\", \"-$5.00\", \"not money\"],\n",
+        "        \"Category\": [\"Coffee\", \"Transport\", \"Refund\", None],\n",
+        "        \"Description\": [\"No spend\", \"Bus\", \"Returned item\", None]\n",
+        "    })\n",
+        "\n",
+        "    return normal_data, edge_data\n",
+        "\n",
+        "def test_data_loading_function():\n",
+        "    \"\"\"\n",
+        "    Test the data loading and cleaning functionality.\n",
+        "    \"\"\"\n",
+        "    print(\"🧪 Testing data loading function...\")\n",
+        "    normal_data, edge_data = create_test_datasets()\n",
+        "\n",
+        "    cleaned = load_and_clean_transaction_data(normal_data)\n",
+        "    assert len(cleaned) == 3, \"Normal dataset should keep 3 valid rows.\"\n",
+        "    assert cleaned[\"Amount\"].sum() == 60.0, \"Amounts should be converted to numeric values.\"\n",
+        "    assert pd.api.types.is_datetime64_any_dtype(cleaned[\"Date\"]), \"Date column should be datetime.\"\n",
+        "\n",
+        "    cleaned_edge = load_and_clean_transaction_data(edge_data)\n",
+        "    assert len(cleaned_edge) == 2, \"Invalid date and invalid amount rows should be removed.\"\n",
+        "    assert -5.0 in cleaned_edge[\"Amount\"].values, \"Refund values should be preserved.\"\n",
+        "\n",
+        "def test_spending_analysis():\n",
+        "    \"\"\"\n",
+        "    Test spending analysis calculations.\n",
+        "    \"\"\"\n",
+        "    print(\"🧪 Testing spending analysis...\")\n",
+        "    normal_data, _ = create_test_datasets()\n",
+        "    cleaned = load_and_clean_transaction_data(normal_data)\n",
+        "    result = analyze_spending_patterns(cleaned)\n",
+        "\n",
+        "    assert result[\"total_spending\"] == 60.0, \"Total spending should equal 60.\"\n",
+        "    assert result[\"category_totals\"][\"Groceries\"] == 50.0, \"Groceries should total 50.\"\n",
+        "    assert result[\"top_category\"] == \"Groceries\", \"Top category should be Groceries.\"\n",
+        "\n",
+        "def test_business_insights():\n",
+        "    \"\"\"\n",
+        "    Test business recommendation generation.\n",
+        "    \"\"\"\n",
+        "    print(\"🧪 Testing business insights...\")\n",
+        "    normal_data, _ = create_test_datasets()\n",
+        "    cleaned = load_and_clean_transaction_data(normal_data)\n",
+        "    result = analyze_spending_patterns(cleaned)\n",
+        "    report = generate_financial_recommendations(result)\n",
+        "\n",
+        "    assert \"Smart Finance Assistant Report\" in report, \"Report title should be present.\"\n",
+        "    assert \"Groceries\" in report, \"Top category should appear in recommendations.\"\n",
+        "    assert \"Recommendations\" in report, \"Report should include recommendations.\"\n",
+        "\n",
+        "# Run all tests\n",
+        "print(\"🔍 COMPREHENSIVE TESTING SUITE\")\n",
+        "print(\"=\" * 40)\n",
+        "\n",
+        "try:\n",
+        "    create_test_datasets()\n",
+        "    test_data_loading_function()\n",
+        "    test_spending_analysis()\n",
+        "    test_business_insights()\n",
+        "    print(\"✅ All tests passed! Your finance assistant is working correctly.\")\n",
+        "except AssertionError as e:\n",
+        "    print(f\"❌ Test failed: {e}\")\n",
+        "except Exception as e:\n",
+        "    print(f\"⚠️ Test error: {e}\")\n"
+      ],
+      "execution_count": 12,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "🔍 COMPREHENSIVE TESTING SUITE\n",
+            "========================================\n",
+            "🧪 Testing data loading function...\n",
+            "🧪 Testing spending analysis...\n",
+            "🧪 Testing business insights...\n",
+            "✅ All tests passed! Your finance assistant is working correctly.\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "_9yQcA766WsR"
+      },
+      "source": [
+        "## Advanced Integration Tests"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "0WSxo0IH6WsR",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "outputId": "dd72f3c0-ea71-4519-f298-0ff8cb05c47a"
+      },
+      "source": [
+        "# 🤖 AI Collaboration: Integration Testing\n",
+        "# AI helped create an end-to-end workflow test.\n",
+        "\n",
+        "def test_full_workflow():\n",
+        "    \"\"\"\n",
+        "    Test the complete workflow from CSV data to final recommendations.\n",
+        "    \"\"\"\n",
+        "    print(\"🧪 Testing complete workflow integration...\")\n",
+        "    normal_data, _ = create_test_datasets()\n",
+        "\n",
+        "    cleaned = load_and_clean_transaction_data(normal_data)\n",
+        "    result = analyze_spending_patterns(cleaned)\n",
+        "    report = generate_financial_recommendations(result)\n",
+        "    chat_response = finance_chatbot_response(\"How can I save money?\", result)\n",
+        "    rag_response = retrieve_financial_guidance(\"budgeting\")\n",
+        "    tool_response = savings_goal_calculator(100, 100, 500)\n",
+        "\n",
+        "    assert not cleaned.empty, \"Cleaned data should not be empty.\"\n",
+        "    assert result[\"total_spending\"] > 0, \"Analysis should calculate positive spending.\"\n",
+        "    assert \"Recommendations\" in report, \"Report should include recommendations.\"\n",
+        "    assert len(chat_response) > 10, \"Chat response should not be empty.\"\n",
+        "    assert len(rag_response) > 10, \"RAG response should not be empty.\"\n",
+        "    assert \"4 month\" in tool_response, \"Savings calculator should calculate 4 months.\"\n",
+        "\n",
+        "def test_error_handling():\n",
+        "    \"\"\"\n",
+        "    Test error handling and user experience.\n",
+        "    \"\"\"\n",
+        "    print(\"🧪 Testing error handling...\")\n",
+        "\n",
+        "    bad_data = pd.DataFrame({\n",
+        "        \"Date\": [\"2024-08-01\"],\n",
+        "        \"Amount\": [\"$10.00\"]\n",
+        "    })\n",
+        "\n",
+        "    try:\n",
+        "        load_and_clean_transaction_data(bad_data)\n",
+        "        assert False, \"Missing columns should raise an error.\"\n",
+        "    except ValueError as e:\n",
+        "        assert \"Missing required columns\" in str(e), \"Error message should explain missing columns.\"\n",
+        "\n",
+        "    assert \"greater than zero\" in savings_goal_calculator(0, 0, 100), \"Tool should validate monthly contribution.\"\n",
+        "\n",
+        "# Run integration tests\n",
+        "try:\n",
+        "    test_full_workflow()\n",
+        "    test_error_handling()\n",
+        "    print(\"✅ Integration tests completed successfully!\")\n",
+        "except Exception as e:\n",
+        "    print(f\"⚠️ Integration test issue: {e}\")\n"
+      ],
+      "execution_count": 13,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "🧪 Testing complete workflow integration...\n",
+            "🧪 Testing error handling...\n",
+            "✅ Integration tests completed successfully!\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "LYzB-AZD6WsR"
+      },
+      "source": [
+        "---\n",
+        "\n",
+        "# 📊 Project Completion Checklist\n",
+        "\n",
+        "## Foundation Skills ✅\n",
+        "- [ ] **Data Processing**: CSV loading and cleaning functions work reliably\n",
+        "- [ ] **Analysis Functions**: Spending summaries calculate correctly\n",
+        "- [ ] **Business Insights**: Recommendations are relevant and actionable  \n",
+        "- [ ] **Error Handling**: Graceful handling of data issues\n",
+        "- [ ] **Testing**: Comprehensive test coverage for core functions\n",
+        "- [ ] **Documentation**: Clear AI collaboration documentation in diary\n",
+        "\n",
+        "## Advanced Integration ✅\n",
+        "- [ ] **Chat Interface**: Finance advisor personality implemented\n",
+        "- [ ] **RAG System**: Document retrieval for financial guidance\n",
+        "- [ ] **Custom Tools**: At least one financial calculator/utility\n",
+        "- [ ] **Gradio UI**: Professional, user-friendly interface\n",
+        "- [ ] **Full Integration**: All components work together seamlessly\n",
+        "\n",
+        "## Professional Standards ✅\n",
+        "- [ ] **Code Quality**: Professional, commented, maintainable code\n",
+        "- [ ] **Business Focus**: Clear connection to real finance problems\n",
+        "- [ ] **User Experience**: Interface suitable for non-technical users\n",
+        "- [ ] **AI Collaboration**: Extensive, well-documented AI usage\n",
+        "- [ ] **Testing**: Robust validation of all features\n",
+        "\n",
+        "## Project Documentation ✅  \n",
+        "- [ ] **Developer's Diary**: Complete AI collaboration documentation\n",
+        "- [ ] **README**: Clear project description and usage instructions\n",
+        "- [ ] **GitHub**: Regular commits showing development progress\n",
+        "- [ ] **Reflection**: Thoughtful analysis of learning and challenges\n",
+        "\n",
+        "---\n",
+        "\n",
+        "# 🎯 Final Thoughts: Your Finance Assistant Journey\n",
+        "\n",
+        "Congratulations on building your Smart Finance Assistant! This project represents a significant achievement in modern business programming:\n",
+        "\n",
+        "**Technical Skills Developed:**\n",
+        "- AI-assisted development workflows\n",
+        "- Professional data processing with pandas\n",
+        "- Integration of multiple AI technologies\n",
+        "- User interface design with Gradio\n",
+        "- Comprehensive software testing\n",
+        "\n",
+        "**Business Skills Developed:**  \n",
+        "- Financial data analysis and insights\n",
+        "- User-centered application design\n",
+        "- Professional documentation practices\n",
+        "- Iterative development methodology\n",
+        "- Critical evaluation of AI suggestions\n",
+        "\n",
+        "**Professional Preparation:**\n",
+        "- Experience with industry-standard AI collaboration\n",
+        "- Portfolio-ready application development\n",
+        "- Understanding of business problem-solving with technology\n",
+        "- Documentation practices for workplace environments\n",
+        "\n",
+        "**Your Smart Finance Assistant demonstrates your ability to direct AI tools toward meaningful business solutions - exactly the skill set that modern BIS graduates need for career success!**\n",
+        "\n",
+        "---\n",
+        "\n",
+        "*Remember to document all AI collaborations in your Developer's Diary and maintain regular GitHub commits throughout your development process.*\n"
+      ]
+    }
+  ],
+  "metadata": {
+    "kernelspec": {
+      "display_name": "Python 3",
+      "language": "python",
+      "name": "python3"
+    },
+    "colab": {
+      "provenance": [],
+      "include_colab_link": true
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 0
+}
